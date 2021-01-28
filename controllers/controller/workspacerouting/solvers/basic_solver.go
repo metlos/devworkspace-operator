@@ -52,7 +52,7 @@ func (s *BasicSolver) Finalize(routing *controllerv1alpha1.WorkspaceRouting) err
 func (s *BasicSolver) GetSpecObjects(routing *controllerv1alpha1.WorkspaceRouting, workspaceMeta WorkspaceMetadata) (RoutingObjects, error) {
 	spec := routing.Spec
 	services := getServicesForEndpoints(spec.Endpoints, workspaceMeta)
-	services = append(services, getDiscoverableServicesForEndpoints(spec.Endpoints, workspaceMeta)...)
+	services = append(services, GetDiscoverableServicesForEndpoints(spec.Endpoints, workspaceMeta)...)
 	ingresses, routes := getRoutingForSpec(spec.Endpoints, workspaceMeta)
 
 	return RoutingObjects{
