@@ -21,6 +21,7 @@ import (
 	routeV1 "github.com/openshift/api/route/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/api/extensions/v1beta1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -47,6 +48,10 @@ type RoutingSolver interface {
 }
 
 type RoutingSolverGetter interface {
+	// GetAdditionalOwnedObjects returns an array of runtime objects. The routing controller will "own" the types of the returned objects
+	// meaning that any changes to such objects will be reconciled by the routing controller and in turn the solver.
+	GetAdditionalOwnedObjects() []runtime.Object
+
 	// HasSolver returns whether the provided routingClass is supported by this RoutingSolverGetter. Returns false if
 	// calling GetSolver with routingClass will return a RoutingNotSupported error. Can be used to check if a routingClass
 	// is supported without having to provide a runtime client. Note that GetSolver may still return another error, if e.g.
@@ -104,4 +109,8 @@ func (_ *SolverGetter) GetSolver(_ client.Client, routingClass controllerv1alpha
 	default:
 		return nil, RoutingNotSupported
 	}
+}
+
+func (*SolverGetter) GetAdditionalOwnedObjects() []runtime.Object {
+	return []runtime.Object{}
 }

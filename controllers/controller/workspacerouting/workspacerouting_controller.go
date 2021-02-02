@@ -316,6 +316,11 @@ func (r *WorkspaceRoutingReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	if r.SolverGetter == nil {
 		return NoSolversEnabled
 	}
+
+	for _, o := range r.SolverGetter.GetAdditionalOwnedObjects() {
+		bld.Owns(o)
+	}
+
 	bld.WithEventFilter(getRoutingPredicatesForSolverFunc(r.SolverGetter))
 
 	return bld.Complete(r)
